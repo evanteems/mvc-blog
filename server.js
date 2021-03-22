@@ -25,7 +25,7 @@ const sesh = {
 
 app.use(session(sesh));
 
-const hbs = exphs.create({ helperz });
+const hbs = exphbs.create({ helperz });
 // Apps start here
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
