@@ -9,7 +9,7 @@
    6.[Questions](#questions)
 
 # Description
-This is a basic Blog site CMS-style that was creared using the following: Model, View, and Controller paradigm. This localhost site is currently hosted on the [Heroku]() site in the deployment and can locally ran using the files provided in the github repository. To learn howe to locally run this server, continue reading to the [Installation](#install) and [Usage](#usage) sections/
+This is a basic Blog site CMS-style that was creared using the following: Model, View, and Controller paradigm. This localhost site is currently hosted on the [Heroku](https://dashboard.heroku.com/apps/mvc-b) site in the deployment and can locally ran using the files provided in the github repository. To learn howe to locally run this server, continue reading to the [Installation](#install) and [Usage](#usage) sections/
 
 This appllication was created using the following: Node.js, express (for the server), and sequelize to connect to the mysql database entitled "tech_blog_db". All user, post, and comment data will be stored in "tect_blog_db". This live app is currently deployed on Heroku, using the JAWSDB ass on to store data. All passwords have been encrypted using 'bcrypt' Node.js packages. The HTML views templates are generated using Handlebars.js
 
