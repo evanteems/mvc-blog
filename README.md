@@ -2,7 +2,7 @@
 
 # Table-of-Contents
    1.[Description](#description)
-   2.[Installation](#install)
+   2.[Installation](#installation)
    3.[Usage](#usage)
    4.[License](#license)
    5.[Contribution](#contribution)
