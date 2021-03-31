@@ -1,38 +1,42 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connections');
-const { Post, User, Comment, Vote } = require('../../utils/auth.js');
+const { Post, User, Comment } = require('../../models');
+const withAuth = require('../../utils/auth');
 
 // Users all here!!
-router.get('/', withAuth, (req, res) => {
+router.get('/', (req, res) => {
+    console.log('======================');
     Post.findAll({
-        attributes: [
-            'id',
-            'post_text',
-            'title',
-            'created_at'],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
+      order: [['createdAt', 'DESC']],
+      attributes: [
+        'id',
+        'body',
+        'title',
+        'createdAt'
+        
+        
+      ],
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Comment,
+          attributes: ['id', 'body', 'post_id', 'user_id', 'createdAt'],
+          
+        },
+        {
+          model: User,
+          attributes: ['username']
+        }
+      ]
     })
-        .then(dbPostData => res.json(dbPostData))
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+      .then(dbPostData => res.json(dbPostData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
 });
 
-router.get('/:id', withAuth, (req, res) => {
+router.get('/:id', (req, res) => {
     Post.findOne({
         where: {
             id: req.params.id
@@ -41,22 +45,22 @@ router.get('/:id', withAuth, (req, res) => {
             'id',
             'post_text',
             'title',
-            'created_at',
+            'createdAt',
         ],
-    include: [
-        {
+        include: [
+          {
             model: Comment,
-            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'createdAt'],
             include: {
                 model: User,
                 attributes: ['username']
             }
-        },
-        {
+          },
+          {
             model: User,
             attributes: ['username']
-        }
-    ]
+          }
+      ]
     })
         .then(dbPostData => {
             if (!dbPostData) {
@@ -88,7 +92,6 @@ router.put('/:id', withAuth, (req, res) => {
     Post.update(
         {
             title: req.body.title,
-            post_text: req.body.post_text
         },
         {
             where: {
@@ -113,7 +116,7 @@ router.delete(':/id', withAuth, (req, res) => {
     console.log('id', req.params.id);
     Post.destroy({
         where: {
-            id: req.params.id
+           id: req.params.id
         }
     })
         .then(dbPostData => {

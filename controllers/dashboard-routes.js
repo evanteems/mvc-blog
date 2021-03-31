@@ -1,83 +1,88 @@
 const router = require('express').Router();
 const sequelize = require('../config/connections');
 const { Post, User, Comment} = require('../models');
-const withAuth = require('../utils/auth');
+const withAuth = require('../utils/auth.js');
 
 router.get('/', withAuth, (req, res) => {
+    console.log(req.session);
+    console.log('======================');
     Post.findAll({
-        where: {
-            user_id: req.session.user_id
+      where: {
+        user_id: req.session.user_id
+      },
+      attributes: [
+        'id',
+        'body',
+        'title',
+        'createdAt'
+      ],
+      include: [
+        {
+          model: Comment,
+          attributes: ['id', 'body', 'post_id', 'user_id', 'createdAt'],
+          
         },
-        attributes: [
-            'id',
-            'post_text',
-            'title',
-            'created_at'
-        ],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
+        {
+          model: User,
+          attributes: ['username']
+        }
+      ]
     })
-        .then(dbPostData => {
-            const posts = dbPostData.map(post => post.get({ plain: true}));
-            res.render('dashboard', {posts, loggedIn: true, username: req.session.username});
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
-});
-
-router.get('/edit/:id', withAuth, (req, res) => {
+      .then(dbPostData => {
+        const posts = dbPostData.map(post => post.get({ plain: true }));
+        res.render('all-post', {layout:"dashboard", posts });
+      })
+      .catch(err => {
+        console.log(err);
+      //   res.status(500).json(err);
+        res.redirect('login');
+      });
+  });
+  
+  router.get('/edit/:id', withAuth, (req, res) => {
     Post.findByPk(req.params.id, {
-        attributes: [
-            'id',
-            'post_text',
-            'title',
-            'created_at'
-        ],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
+      attributes: [
+        'id',
+        'body',
+        'title',
+        'createdAt'
+      ],
+      include: [
+        {
+          model: Comment,
+          attributes: ['id', 'body', 'post_id', 'user_id', 'createdAt'],
+          include: {
+            model: User,
+            attributes: ['username']
+          }
+        },
+        {
+          model: User,
+          attributes: ['username']
+        }
+      ]
     })
-        .then(dbPostData => {
-            if (dbPostData) {
-                const post = dbPostData.get({ plain: true});
-
-                res.render('edit-post', {
-                    post,
-                    loggedIn: true,
-                    username: req.session.username
-                });
-            } else {
-                res.status(404).end();
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        });
-});
-
-module.exports = router;
+      .then(dbPostData => {
+        if (dbPostData) {
+          const post = dbPostData.get({ plain: true });
+          
+          res.render('edit-post', {
+            post,
+            loggedIn: true
+          });
+        } else {
+          res.status(404).end();
+        }
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      });
+  });
+  
+  router.get("/new", withAuth, (req, res) => {
+      res.render("new-post", {
+        layout: "dashboard"
+      });
+    });
+  
+  module.exports = router;

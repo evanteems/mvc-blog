@@ -1,6 +1,4 @@
-const { response } = require("express");
-
-async function deleteFromHandler(event) {
+async function deleteFormHandler(event) {
     event.preventDefault();
 
     const id = window.location.toString().split('/')[
@@ -18,4 +16,4 @@ async function deleteFromHandler(event) {
     }
 }
 
-document.querySelector('.delete-post-btn').addEventListener('click', deleteFromHandler);
+document.querySelector('.delete-post-btn').addEventListener('click', deleteFormHandler);
